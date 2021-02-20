@@ -3,51 +3,89 @@ import React, {useState} from "react";
 import Container from '@material-ui/core/Container';
 import { Grid, Paper, Typography } from "@material-ui/core";
 
+import { makeStyles } from '@material-ui/core/styles';
 
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(20),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center', 
+  }
+})
+);
 
 const ProfileSidebar = (props) => {
+  const classes = useStyles();
 
-    return (
-        <div>
+  return (
+    <div className={classes.paper}>
+      <Typography gutterBottom={true}>
+        Christopher Liu [NAME]
+      </Typography>
+
+      <Grid container spacing={2} xs={12} fullWidth="true" >
+        <Grid item xs={4} fullWidth="true">
+          <Paper>
             <Typography>
-                Christopher Liu 
+              Following
             </Typography>
+            <Typography xs={4} gutterBottom={true}>
+              0
+            </Typography>
+          </Paper>
+        </Grid>
+        
+        <Grid item xs={4}>
+          <Paper>
+            <Typography>
+              Followers
+            </Typography>
+            <Typography>
+              0
+            </Typography>
+          </Paper>
+        </Grid>
 
-            <Grid container justify="center" >
-                <Grid item>
-                    <Paper>
-                        <Typography>
-                            Following
-                        </Typography>
-                        <Typography>
-                            0
-                        </Typography>
-                    </Paper>
-                </Grid>
-                <Grid item>
-                    <Paper>
-                        <Typography>
-                            Followers
-                        </Typography>
-                        <Typography justify="center" align-self="center">
-                            0
-                        </Typography>
-                    </Paper>
-                </Grid>
-                <Grid item>
-                    <Paper>
-                        <Typography>
-                            Posts
-                        </Typography>
-                        <Typography>
-                            0
-                        </Typography>
-                    </Paper>
-                </Grid>
-                
-            </Grid>
-        </div>
-    );
+        <Grid item xs={4}>
+          <Paper>
+            <Typography>
+              Posts
+            </Typography>
+            <Typography>
+              0
+            </Typography>
+          </Paper>
+        </Grid>
+      </Grid>
+
+      <Grid container direction="column" justify="space-between" spacing={3}>
+        <Grid item>
+          <Paper>
+            <Typography>
+              [How much money I saved this month]
+            </Typography>
+          </Paper>
+        </Grid>
+        
+        <Grid item> 
+          <Paper>
+            <Typography>
+              [How much money I saved all time]
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid>
+          <Paper>
+            <Typography gutterBottom={true}>
+              [My milestones]
+            </Typography>
+          </Paper>
+        </Grid>
+      </Grid>
+    </div>
+  );
 
 };
 

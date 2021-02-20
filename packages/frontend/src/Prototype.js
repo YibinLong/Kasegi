@@ -2,6 +2,7 @@ import React from "react";
 import { Post } from "./Components/Post";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
+import Home from "./Pages/Home";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter, Route } from "react-router-dom";
 import { auth, useUser, remote } from './api';
@@ -26,11 +27,11 @@ function App() {
     <CssBaseline />
     <BrowserRouter>
         <div>
-            <Route path="/" exact component={getHome} />
+            <Route path="/" exact component={Home} />
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
         </div>
-        <button onClick={handleb}>button</button>
+        {/*<button onClick={handleb}>button</button>*/}
     </BrowserRouter>
     </>
 
