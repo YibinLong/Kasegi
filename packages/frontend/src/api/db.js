@@ -17,18 +17,24 @@ export const db = {
       userid: uid,
     });
   },
-  getFriends: async (user) => {
-
-  },
-  getUser: async () => {
-    if (!auth().currentUser) throw new Error('not signed in');
-    const uid = await auth().currentUser.uid;
-    const pubDoc = await store().collection('users').doc(uid).collection('public').doc(uid).get();
-    const privDoc = await store().collection('users').doc(uid).collection('private').doc(uid).get();
-    return {
-      uid: uid,
-      ...(await pubDoc.data()),
-      ...(await privDoc.data()),
+  getUser: async (userid) => {
+    let getPrivate = !Boolean(userid); // If not given a user, try to get the current user
+    let uid;
+    if (getPrivate) {
+      if (!auth().currentUser) throw new Error('not signed in');
+      uid = await auth().currentUser.uid;
+    } else {
+      uid = userid;
     }
+
+    let data = {uid: uid};
+    const pubDoc = await store().collection('users').doc(uid).collection('public').doc(uid).get();
+    data = { ...data, ...await pubDoc.data()};
+    if (getPrivate) {
+      const privDoc = await store().collection('users').doc(uid)
+        .collection('private').doc(uid).get();
+      data = { ...data, ...await privDoc.data()};
+    }
+    return data;
   }
 };
