@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import config from '../config';
-import { auth } from './auth';
+import { auth, useUser } from './auth';
+import { db } from './db';
 
 if (firebase.apps.length === 0) {
   if (process.env.NODE_ENV === 'production') {
@@ -10,4 +11,4 @@ if (firebase.apps.length === 0) {
   }
 }
 
-export { auth };
+export { auth, db, useUser };

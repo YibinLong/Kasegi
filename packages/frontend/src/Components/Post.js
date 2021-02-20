@@ -1,7 +1,9 @@
 import React, {useState} from "react";
+import { useUser } from '../api';
 
 export const Post = (props) => {
     const [likes, setLikes] = useState(0);
+    const user = useUser();
 
     const addLike = () => {
         setLikes(likes+1);

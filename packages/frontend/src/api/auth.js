@@ -1,5 +1,6 @@
-import 'firebase/auth';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import React from 'react';
 
 /**
  * 
@@ -13,4 +14,12 @@ export const auth = {
         record.user.updateProfile(opts);
       })
   },
+}
+
+export const useUser = () => {
+  const [user, setUser] = React.useState(null);
+  firebase.auth().onAuthStateChanged((user) => {
+    setUser(user);
+  })
+  return user;
 }
