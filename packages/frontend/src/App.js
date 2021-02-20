@@ -6,6 +6,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import { useUser } from './api';
 import { Dashboard } from "./Pages/Dashboard";
 import { Profile } from "./Pages/Profile";
+import { Navbar } from './Components/Navbar';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
   return (
     <>
     <CssBaseline />
+    <Navbar/>
     <BrowserRouter>
       <Route path="/" exact component={getHome} />
       <Route path="/signin" component={SignIn} />
