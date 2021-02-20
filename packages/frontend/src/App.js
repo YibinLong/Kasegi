@@ -5,6 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter, Route } from "react-router-dom";
 import { useUser } from './api';
 import { Dashboard } from "./Pages/Dashboard";
+import { Profile } from "./Pages/Profile";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
       <Route path="/" exact component={getHome} />
       <Route path="/signin" component={SignIn} />
       <Route path="/signup" component={SignUp} />
+      <Route path="/:id" component={Profile} />
     </BrowserRouter>
     </>
 
