@@ -1,23 +1,18 @@
 import React from "react";
-import {Post} from "./Components/Post";
+import { Post } from "./Components/Post";
 import SignIn from "./Pages/SignInPage/SignIn";
 import SignUp from "./Pages/SignUpPage/SignUp";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter, Route } from "react-router-dom";
-import { auth, useUser, db } from './api';
+import { auth, useUser, remote } from './api';
+import config from './config';
 
 function App() {
   const user = useUser();
-  React.useEffect(() => {
-    if (user) {
-      db.listPosts()
-        .then((posts) => {
-          posts.forEach(post => console.log(post.data()));
-        });
-    } else {
-      auth.signIn()
-    }
-  }, [user])
+  const handleb = async () => {
+    await auth.signIn(config.tests);
+    remote.changeName('Pee Toilet');
+  };
 
   return (
     <>
@@ -28,8 +23,10 @@ function App() {
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
         </div>
+        <button onClick={handleb}>button</button>
     </BrowserRouter>
     </>
+
 
   );
 }

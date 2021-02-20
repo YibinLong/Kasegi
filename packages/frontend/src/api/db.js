@@ -1,17 +1,23 @@
+import firebase from 'firebase/app';
 
-const testPosts = {
-  user: { displayName: 'Eric Song', },
-  timestamp: Date.now(),
-  message: 'I have saved $3 since yesterday!',
-  reactions: {
-    likes: 1,
-    heart: 2,
-    ugly: 99999,
-  },
-};
+const store = firebase.firestore;
+const auth = firebase.auth;
 
 export const db = {
-  getPosts: (user) => {
-    return Array(5).map(() => testPosts);
-  }
-}
+  listPosts: async (limit) => {
+    if (!auth().currentUser) throw new Error('not signed in');
+    return store().collection('posts').limit(limit).get();
+  },
+  createPost: async (options) => {
+    if (!auth().currentUser) throw new Error('not signed in');
+    const uid = auth().currentUser.uid;
+    return store().collection('posts').doc().set({
+      ...options,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      userid: uid,
+    });
+  },
+  getFriends: async (user) => {
+
+  },
+};

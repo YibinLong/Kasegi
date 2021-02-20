@@ -2,6 +2,7 @@
 
 # firebase
 config.js
+/src/react-app-env.d.ts
 
 # dependencies
 /node_modules
