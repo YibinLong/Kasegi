@@ -16,7 +16,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://kasegi.tech/">
+      <Link color="inherit" href="https://kasegi.online/">
         Kasegi
       </Link>{' '}
       {new Date().getFullYear()}
