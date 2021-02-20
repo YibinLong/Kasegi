@@ -23,7 +23,6 @@ export const user = {
   changeName(name) {
     if (!auth().currentUser) throw Error('not signed in');
     const uid = auth().currentUser.uid;
-    console.log(uid);
     return db().collection('users').doc(uid)
       .collection('public').doc(uid)
       .set({
