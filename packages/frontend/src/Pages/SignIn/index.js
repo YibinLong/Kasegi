@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn(){
   const classes = useStyles();
   const history = useHistory();
   const [username, setUsername] = React.useState('');
@@ -104,7 +104,7 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="/forgot" variant="body2">
+              <Link to="/forgot" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
