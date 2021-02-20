@@ -3,8 +3,15 @@ import {Post} from "./Components/Post";
 import SignIn from "./Pages/SignInPage/SignIn";
 import SignUp from "./Pages/SignUpPage/SignUp";
 import CssBaseline from '@material-ui/core/CssBaseline';
+
+
+import Button from '@material-ui/core/Button';
+
 import { BrowserRouter, Route } from "react-router-dom";
 import { auth, useUser, db } from './api';
+
+import ProfileSidebar from "./Components/ProfileSidebar";
+
 
 function App() {
   const user = useUser();
@@ -24,7 +31,7 @@ function App() {
     <CssBaseline />
     <BrowserRouter>
         <div>
-            <Route path="/" exact component={Post} />
+            <Route path="/" exact component={ProfileSidebar} />
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
         </div>
