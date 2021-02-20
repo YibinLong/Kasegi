@@ -2,6 +2,7 @@
 start.sh
 certs
 cockroach.sh
+config.js
 
 # OS X
 .DS_Store*
