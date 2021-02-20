@@ -1,11 +1,7 @@
 import React from "react";
-import {Post} from "./Components/Post";
-import SignIn from "./Pages/SignInPage/SignIn";
-import SignUp from "./Pages/SignUpPage/SignUp";
+import SignIn from "./Pages/SignIn";
+import SignUp from "./Pages/SignUp";
 import CssBaseline from '@material-ui/core/CssBaseline';
-
-
-import Button from '@material-ui/core/Button';
 
 import { BrowserRouter, Route } from "react-router-dom";
 import { auth, useUser, db } from './api';
