@@ -1,3 +1,8 @@
+# Cockroach
+start.sh
+certs
+cockroach.sh
+
 # OS X
 .DS_Store*
 Icon?
