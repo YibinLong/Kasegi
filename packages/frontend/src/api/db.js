@@ -6,7 +6,10 @@ const auth = firebase.auth;
 export const db = {
   listPosts: async (limit) => {
     if (!auth().currentUser) throw new Error('not signed in');
-    return store().collection('posts').limit(limit).get();
+    const snapshot = await store().collection('posts').get()
+    const ret = [];
+    snapshot.forEach(doc => ret.push(doc.data()));
+    return ret;
   },
   createPost: async (options) => {
     if (!auth().currentUser) throw new Error('not signed in');
