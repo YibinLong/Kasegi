@@ -20,4 +20,15 @@ export const db = {
   getFriends: async (user) => {
 
   },
+  getUser: async () => {
+    if (!auth().currentUser) throw new Error('not signed in');
+    const uid = await auth().currentUser.uid;
+    const pubDoc = await store().collection('users').doc(uid).collection('public').doc(uid).get();
+    const privDoc = await store().collection('users').doc(uid).collection('private').doc(uid).get();
+    return {
+      uid: uid,
+      ...(await pubDoc.data()),
+      ...(await privDoc.data()),
+    }
+  }
 };

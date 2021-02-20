@@ -69,17 +69,36 @@ describe("firestore.rules", () => {
     });
 
     describe("read", () => {
-      test("should not let logged out users read", async () => {
+      it('should let logged in users read their own data', async () => {
+        const db = authedApp(defaultAuth);
+        const userRef = db.collection(collection).doc(uid);
+        const privRef = db.collection(collection).doc(uid).collection('public').doc(uid);
+        const pubRef = db.collection(collection).doc(uid).collection('private').doc(uid);
+        await firebase.assertSucceeds(userRef.get());
+        await firebase.assertSucceeds(privRef.get());
+        await firebase.assertSucceeds(pubRef.get());
+
+      })
+
+      test("should let logged out users read nothing", async () => {
         const db = authedApp(undefined);
-        const user = db.collection(collection).doc(uid);
-        await firebase.assertFails(user.get());
+        const pubRef = db.collection(collection).doc(uid).collection('private').doc(uid);
+        const privRef = db.collection(collection).doc(uid).collection('public').doc(uid);
+        await firebase.assertFails(pubRef.get());
+        await firebase.assertFails(privRef.get());
       });
 
-      test("should not let anonymous user", async () => {
+      test("should not let anonymous user read private", async () => {
         const db = authedApp(anonymousAuth);
-        const user = db.collection(collection).doc(uid);
-        await firebase.assertFails(user.get());
+        const privRef = db.collection(collection).doc(uid).collection('private').doc(uid);
+        await firebase.assertFails(privRef.get());
       });
+
+      it('should let anonymous user read public', async () => {
+        const db = authedApp(anonymousAuth);
+        const pubRef = db.collection(collection).doc(uid).collection('public').doc(uid);
+        await firebase.assertSucceeds(pubRef.get());
+      })
 
       test("should only let logged in users read own", async () => {
         const db = authedApp(defaultAuth);
@@ -90,10 +109,12 @@ describe("firestore.rules", () => {
         await firebase.assertFails(anotherUser.get());
       });
 
-      test("should not let admin read", async () => {
+      test("should not let admin read private", async () => {
         const db = authedApp(adminAuth);
-        const user = db.collection(collection).doc(uid);
-        await firebase.assertFails(user.get());
+        const privRef = db.collection(collection).doc(uid).collection('private').doc(uid);
+        const pubRef = db.collection(collection).doc(uid).collection('public').doc(uid);
+        await firebase.assertSucceeds(pubRef.get());
+        await firebase.assertFails(privRef.get());
       });
     });
 

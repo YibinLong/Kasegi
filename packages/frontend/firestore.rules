@@ -24,16 +24,16 @@ service cloud.firestore {
 
     match /users/{user} {
       match /private/{anything=**} {
-        allow read, list: if isSignedIn() && user == me();
-        allow write: if isSignedIn() && user == me();
+        allow read, write: if isSignedIn() && user == me();
       }
 
       match /public/{anything=**} {
-        allow read, list: if isSignedIn();
+        allow read: if isSignedIn();
         allow write: if isSignedIn() && user == me();
       }
 
       allow create : if request.auth == null;
+      allow read: if isSignedIn();
     }
 
     match /posts/{document=**} {

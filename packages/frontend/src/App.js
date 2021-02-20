@@ -2,35 +2,28 @@ import React from "react";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import CssBaseline from '@material-ui/core/CssBaseline';
-
 import { BrowserRouter, Route } from "react-router-dom";
-import { auth, useUser, db } from './api';
-
-import ProfileSidebar from "./Components/ProfileSidebar";
+import { useUser } from './api';
+import { Dashboard } from "./Pages/Dashboard";
 
 
 function App() {
   const user = useUser();
-  React.useEffect(() => {
-    if (user) {
-      db.listPosts()
-        .then((posts) => {
-          posts.forEach(post => console.log(post.data()));
-        });
-    } else {
-      auth.signIn()
-    }
-  }, [user])
+  console.log('user', user);
+
+  const getHome = () => {
+    if (user === undefined) return <></> // Loading
+    else if (user) return <Dashboard /> // Signed Out
+    else return <SignIn />
+  }
 
   return (
     <>
     <CssBaseline />
     <BrowserRouter>
-        <div>
-            <Route path="/" exact component={ProfileSidebar} />
-            <Route path="/signin" component={SignIn} />
-            <Route path="/signup" component={SignUp} />
-        </div>
+      <Route path="/" exact component={getHome} />
+      <Route path="/signin" component={SignIn} />
+      <Route path="/signup" component={SignUp} />
     </BrowserRouter>
     </>
 

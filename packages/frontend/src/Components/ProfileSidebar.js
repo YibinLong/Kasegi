@@ -2,15 +2,17 @@ import React, {useState} from "react";
 
 import Container from '@material-ui/core/Container';
 import { Grid, Paper, Typography } from "@material-ui/core";
+import { useUser } from '../api';
 
 
 
 const ProfileSidebar = (props) => {
+    const user = useUser();
 
     return (
         <div>
             <Typography>
-                Christopher Liu 
+                {user && user.name}
             </Typography>
 
             <Grid container justify="center" >
