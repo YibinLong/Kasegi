@@ -4,7 +4,7 @@ export const Navbar = () => {
   const user = useUser();
 
   return (
-    <AppBar>
+    <AppBar position="relative">
       <Toolbar>
         { 
           user && 
