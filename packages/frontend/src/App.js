@@ -1,11 +1,8 @@
-import React, {useState} from "react";
-
+import React from "react";
 import {Post} from "./Components/Post";
 import SignIn from "./Pages/SignInPage/SignIn";
 import SignUp from "./Pages/SignUpPage/SignUp";
-
-import Button from '@material-ui/core/Button';
-
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter, Route } from "react-router-dom";
 
 function App() {
@@ -25,6 +22,8 @@ function App() {
     </div>
     */
 
+    <>
+    <CssBaseline />
     <BrowserRouter>
         <div>
             <Route path="/" exact component={Post} />
@@ -33,6 +32,7 @@ function App() {
             
         </div>
     </BrowserRouter>
+    </>
 
   );
 }
