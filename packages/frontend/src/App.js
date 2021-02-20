@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from "react";
+
+import {Post} from "./Components/Post";
+import SignIn from "./Pages/SignInPage/SignIn";
+import SignUp from "./Pages/SignUpPage/SignUp";
+
+import Button from '@material-ui/core/Button';
+
+import { BrowserRouter, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    
+    /*
+    <div>
+        
+        <h1>Kasegi</h1>
+        <Post name="Eric Song"/>
+        <Post name="Chris Liu"/>
+        <Post name="Yibin Long"/>
+        <Button variant="contained" color="primary">
+            Hello World
+        </Button>
+        
     </div>
+    */
+
+    <BrowserRouter>
+        <div>
+            <Route path="/" exact component={Post} />
+            <Route path="/signin" component={SignIn} />
+            <Route path="/signup" component={SignUp} />
+            
+        </div>
+    </BrowserRouter>
+
   );
 }
 
