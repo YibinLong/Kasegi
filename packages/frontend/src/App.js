@@ -11,7 +11,6 @@ import { Navbar } from './Components/Navbar';
 
 function App() {
   const auth = useAuth();
-  console.log('render?');
 
   const getHome = () => {
     if (auth.current === undefined) return <></> // Loading

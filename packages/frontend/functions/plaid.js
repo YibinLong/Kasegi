@@ -1,4 +1,5 @@
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const plaid = require('plaid');
 
 const map = {
@@ -39,10 +40,32 @@ exports.createLinkToken = functions.https.onCall((data, context) => {
   });
 })
 
+exports.setAccessToken = functions.https.onCall((data, context) => {
+  const uid = context.auth.uid;
+  return new Promise((resolve, reject) => {
+    plaidClient.exchangePublicToken(data.publicToken, (err, tres) => {
+      if (err != null) { 
+        functions.logger.info(tres, { structuredData: true});
+        return reject(err); 
+      }
+      functions.logger.info(tres, { structuredData: true});
+      const userRef = admin.firestore().collection('users').doc(uid);
+      const privateRef = userRef.collection('private').doc(uid);
+      privateRef.set({
+        itemID: tres.item_id,
+        access_token: tres.access_token,
+        publicToken: data.publicToken,
+        metadata: data.metadata,
+      }).then(() => resolve({access_token: data.publicToken, ITEM_ID: tres.item_id}))
+
+    });
+  });
+})
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //   functions.logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
-// });
+// })

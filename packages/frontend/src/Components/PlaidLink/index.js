@@ -15,23 +15,9 @@ const useStyles = makeStyles(() => ({
   }
 })) 
 
-export const PlaidLinkWrapper = (props) => {
-
-}
-
 export const PlaidLinkButton = (props) => {
-  const classes = useStyles();
   const bank = useBank();
-  const { linkToken } = props;
-
-  const onSuccess = React.useCallback((token, metadata) => {
-    // send token to server
-  }, [])
-
-  const config = {
-    token: linkToken,
-    onSuccess,
-  }
+  const classes = useStyles();
 
   const StyledButton = (props) => (
     <Button 
@@ -46,11 +32,29 @@ export const PlaidLinkButton = (props) => {
       Connect to your bank
     </Button>
   )
+  if (bank.linkToken) {
+    return <PlaidLink linkToken={bank.linkToken} as={StyledButton}/>
+  } else {
+    return <StyledButton onClick={() => {}} ready={false} />
+  }
+}
+
+export const PlaidLink = (props) => {
+  const { linkToken, as: Button } = props;
+  const bank = useBank();
+
+  const onSuccess = React.useCallback((token, metadata) => {
+    console.log('on success');
+    bank.accessToken(token, metadata);
+  }, [bank])
+
+  const config = {
+    token: linkToken,
+    onSuccess: bank.accessToken,
+  }
 
   const { open, ready, error } = usePlaidLink(config);
-
-  if (!linkToken) return <StyledButton ready={false}/>
   return (
-    <StyledButton ready={ready} onClick={() => open()} />
+    <Button ready={ready} onClick={() => open()} />
   )
 }

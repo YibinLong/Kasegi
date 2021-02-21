@@ -59,8 +59,6 @@ export const AuthContextProvider = (props) => {
 
   }, [firebase])
 
-  console.log('reererengin');
-
   return (
     <AuthContext.Provider value={value}>
       {props.children}
