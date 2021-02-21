@@ -1,7 +1,6 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import LinkUI from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -15,7 +14,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://kasegi.online/">
+      <Link color="inherit" to="/">
         Kasegi
       </Link>{' '}
       {new Date().getFullYear()}
@@ -47,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn(){
   const classes = useStyles();
   const history = useHistory();
-  const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [email, setEmail] = React.useState('');
 

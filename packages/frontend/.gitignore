@@ -3,6 +3,7 @@
 # firebase
 config.js
 /src/react-app-env.d.ts
+firestore.debug.log
 
 # dependencies
 /node_modules

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 
 import Container from '@material-ui/core/Container';
 import { Grid, Paper, Typography } from "@material-ui/core";
+import { useUser } from '../api';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -18,11 +19,12 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfileSidebar = (props) => {
   const classes = useStyles();
+  const user = useUser();
 
   return (
     <div className={classes.paper}>
-      <Typography gutterBottom={true}>
-        Christopher Liu [NAME]
+      <Typography>
+        {user && user.name}
       </Typography>
 
       <Grid container spacing={2} xs={12} fullWidth="true" >

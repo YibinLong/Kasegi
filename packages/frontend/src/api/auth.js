@@ -26,19 +26,11 @@ export const auth = {
    */
   signIn: (options) => {
     const { email, password } = options;
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+    return firebase.auth().signInWithEmailAndPassword(email, password)
   },
 
   signOut: () => {
     return firebase.auth().signOut();
   }
 
-}
-
-export const useUser = () => {
-  const [user, setUser] = React.useState(undefined);
-  firebase.auth().onAuthStateChanged((user) => {
-    setUser(user);
-  })
-  return user;
 }
