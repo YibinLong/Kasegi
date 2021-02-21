@@ -3,15 +3,11 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-import config from '../config';
+import './init';
 import { auth } from './auth';
 import { db } from './db';
 import { user } from './user';
-
-firebase.apps.length === 0 &&
-process.env.NODE_ENV === 'production' ? 
-  firebase.initializeApp() :
-  firebase.initializeApp(config.firebase);
+import { bank } from './plaid';
 
 export const useUser = () => {
   const [user, setUserData] = React.useState(undefined);
@@ -27,4 +23,4 @@ export const useUser = () => {
   return user;
 }
 
-export { auth, db, user as remote };
+export { auth, db, user as remote, bank };

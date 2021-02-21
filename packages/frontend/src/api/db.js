@@ -12,7 +12,7 @@ export const db = {
     const posts = await Promise.all(
       datas.map(async (data) => {
         if (!data.owner) return null;
-        return { ...data, ...await this.getUser(data.owner) }
+        return { ...await this.getUser(data.owner), ...data }
       })
     );
     return posts.filter(post => Boolean(post));

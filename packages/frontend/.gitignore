@@ -1,9 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+*.log
+*.sh
 
 # firebase
 config.js
 /src/react-app-env.d.ts
-firestore.debug.log
+firestore-debug.log
+service-account.json
 
 # dependencies
 /node_modules

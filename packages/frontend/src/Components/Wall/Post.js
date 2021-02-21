@@ -14,15 +14,16 @@ export const Post = (props) => {
   const addLike = () => {
     setLikes(likes+1);
   };
-  console.log(props.post);
   const { name, message, timestamp } = props.post;
 
   return (
     <Card className="Post">
       <CardHeader>
-        {name}
       </CardHeader>
       <CardContent>
+        <Typography variant="h5">
+          {props.post.name}
+        </Typography>
         <Typography gutterBottom>
           {message}
         </Typography>
