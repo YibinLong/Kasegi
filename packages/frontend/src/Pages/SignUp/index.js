@@ -51,7 +51,7 @@ export default function SignUp() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    auth.createUser({displayName: username, password, email});
+    auth.createUser({name: username, password, email});
   }
 
   return (
