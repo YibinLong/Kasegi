@@ -7,9 +7,9 @@ const map = {
 }
 
 const plaidClient = new plaid.Client({
-  clientID: process.env.PLAID_CLIENT_ID,
-  secret: process.env.PLAID_SECRET,
-  env: map[process.env.PLAID_ENV],
+  clientID: functions.config().plaid.client_id,
+  secret: functions.config().plaid.secret,
+  env: map[functions.config().plaid.environment],
   options: {
     version: '2020-09-14',
   }
@@ -56,8 +56,8 @@ exports.setAccessToken = functions.https.onCall((data, context) => {
         access_token: tres.access_token,
         publicToken: data.publicToken,
         metadata: data.metadata,
-      }).then(() => resolve({access_token: data.publicToken, ITEM_ID: tres.item_id}))
-
+      }, { merge: true })
+        .then(() => resolve({access_token: data.publicToken, ITEM_ID: tres.item_id}))
     });
   });
 })

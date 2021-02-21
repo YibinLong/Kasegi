@@ -11,7 +11,6 @@ import { Navbar } from './Components/Navbar';
 
 function App() {
   const auth = useAuth();
-
   const getHome = () => {
     if (auth.current === undefined) return <></> // Loading
     else if (auth.current) return <Dashboard /> // Signed Out

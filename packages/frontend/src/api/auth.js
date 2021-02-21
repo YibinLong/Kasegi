@@ -1,13 +1,12 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import 'firebase/firestore';
-
+import 'firebase/functions';
 import React from 'react';
-import { user as remote } from './user';
-import { db } from './db';
 
 const fb = firebase.auth();
+const functions = firebase.functions();
 
+const serverCreateUser = functions.httpsCallable('postCreateUser');
 
 export const auth = {
 
@@ -16,12 +15,14 @@ export const auth = {
    * @param options.password required, password
    * @param options.name display name
    */
-  createUser: (options) => {
+  createUser: async (options) => {
     if (fb.currentUser) throw Error('Cannot create a user when signed in.');
     const { email, password, name } = options;
-
-    return fb.createUserWithEmailAndPassword(email, password)
-      .then(() => remote.changeName(name))
+    // Set up a uid for the request to the function
+    await fb.signInAnonymously();
+    await serverCreateUser({ name: name });
+    const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+    await auth.currentUser.linkWithCredential(credential);
   },
 
   /**
@@ -46,21 +47,16 @@ export function useAuth() {
 };
 
 export const AuthContextProvider = (props) => {
-  const [value, setValue] = React.useState(auth)
-
+  const [current, setCurrent] = React.useState();
 
   React.useEffect(() => {
     fb.onAuthStateChanged(user => {
-      user ? db.getUser().then((data) => { 
-        setValue(old => ({...old, current: data}));
-      }) :
-        setValue(old => ({...old, current: false}));
+      setCurrent(user);
     });
-
-  }, [firebase])
+  }, [])
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{current, ...auth}}>
       {props.children}
     </AuthContext.Provider>
   )

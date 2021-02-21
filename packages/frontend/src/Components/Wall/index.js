@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDB } from '../../api';
+import { useDB, useAuth } from '../../api';
 import { Box } from '@material-ui/core';
 import { Post } from './Post';
 import { PlaidLinkButton } from '../PlaidLink';
@@ -7,6 +7,7 @@ import { PlaidLinkButton } from '../PlaidLink';
 export const Wall = () => {
   const [ posts, setPosts ] = React.useState([]);
   const db = useDB();
+  const auth = useAuth();
 
   React.useEffect(() => {
     db.listPosts().then(setPosts);

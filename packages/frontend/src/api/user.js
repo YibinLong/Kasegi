@@ -16,10 +16,6 @@ export const user = {
       .get();
   },
 
-  get(uid) {
-    return db().collection('users').where('owner', '==', 'uid');
-  },
-
   changeName(name) {
     if (!auth().currentUser) throw Error('not signed in');
     const uid = auth().currentUser.uid;

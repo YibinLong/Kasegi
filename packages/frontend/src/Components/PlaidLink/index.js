@@ -43,14 +43,9 @@ export const PlaidLink = (props) => {
   const { linkToken, as: Button } = props;
   const bank = useBank();
 
-  const onSuccess = React.useCallback((token, metadata) => {
-    console.log('on success');
-    bank.accessToken(token, metadata);
-  }, [bank])
-
   const config = {
     token: linkToken,
-    onSuccess: bank.accessToken,
+    onSuccess: bank.exchangeToken,
   }
 
   const { open, ready, error } = usePlaidLink(config);

@@ -9,9 +9,10 @@ import { useBank, BankContextProvider } from './plaid';
 export const Provider = (props) => {
   return (
     <AuthContextProvider>
-      <BankContextProvider>
-        <DBContextProvider children={props.children} />
-      </BankContextProvider>
+      <DBContextProvider>
+        <BankContextProvider children={props.children}>
+        </BankContextProvider>
+      </DBContextProvider>
     </AuthContextProvider>
   );
 }

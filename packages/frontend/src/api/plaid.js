@@ -1,46 +1,45 @@
-import Plaid from 'plaid';
-import React, { useEffect } from 'react';
-import config from '../config';
+import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/functions';
-import { request } from 'http';
+import { useDB } from './db';
+import { useAuth } from './auth';
 
-const { clientID, envstring } = config.plaid;
-const secret = config.plaid.secret.sandbox;
-
-let envs = {
-  'sandbox': Plaid.environments.sandbox,
-  'development': Plaid.environments.development,
-  'production': Plaid.environments.production,
+const functions = firebase.functions();
+if (process.env.NODE_ENV === 'development') {
+  functions.useEmulator('localhost', 5001);
 }
 
-const server = firebase.functions;
-server().useEmulator('localhost', 5001);
-const requestLinkToken = server().httpsCallable('plaid-createLinkToken');
-const getAccessToken = server().httpsCallable('plaid-setAccessToken')
+const serverLinkToken = functions.httpsCallable('plaid-createLinkToken');
+const serverAccessToken = functions.httpsCallable('plaid-setAccessToken');
 
 const BankContext = React.createContext();
-export function useBank() {
-  return React.useContext(BankContext);
-};
 
 export const BankContextProvider = (props) => {
   const [linkToken, setLinkToken] = React.useState();
-
-  const accessToken = async(token, metadata) => {
-    await getAccessToken({ publicToken: token, metadata })
-  };
+  const [accessToken, setAccessToken] = React.useState();
+  const db = useDB();
+  const auth = useAuth();
 
   React.useEffect(() => {
-    requestLinkToken()
-      .then((response) => {
-        const data = response.data;
-        console.log(data);
-        if (data.status_code !== 200) {
-          throw Error('Request Error: Plaid Returned', data.status_code);
+    if (auth.current) {
+      (async () => {
+        const user = await db.getUser(undefined, 'private');
+        if (!user || !user.accessToken) {
+          const { data } = await serverLinkToken();
+          console.log(data);
+          if (data.status_code !== 200) 
+            throw Error('Request Error: Plaid Returned', data.status_code);
+          setLinkToken(data.link_token);
+        } else {
+          setAccessToken(user.accessToken);
         }
-        setLinkToken(data.link_token);
-      })
+      })();
+    }
+  }, [auth, db]);
+
+  const exchangeToken = React.useCallback(async (token, metadata) => {
+    const response = await serverAccessToken({ publicToken: token, metadata })
+    setAccessToken(response.data.access_token);
   }, []);
 
   return (
@@ -48,8 +47,13 @@ export const BankContextProvider = (props) => {
       value={{
         accessToken,
         linkToken,
+        exchangeToken,
       }} 
       children={props.children}
     />
   )
 }
+
+export function useBank() {
+  return React.useContext(BankContext);
+};
