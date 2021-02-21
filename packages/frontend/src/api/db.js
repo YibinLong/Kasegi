@@ -12,6 +12,9 @@ const DBContext = React.createContext();
 export function DBContextProvider(props) {
   const [ docs, setDocs ] = React.useState();
   const auth = useAuth();
+  const [ posts, setPosts ] = React.useState([]);
+
+  console.log('im rerendering');
 
   const getUser = React.useCallback(async (queryId, selector) => {
     if (!auth.current) {
@@ -59,7 +62,8 @@ export function DBContextProvider(props) {
     if (!auth.current) throw new Error('not signed in');
     let snapshot;
     try {
-      snapshot = await store.collection('posts').get();
+      snapshot = await store.collection('posts')
+        .orderBy('timestamp', 'desc').get();
     } catch (e) {
       console.log('could not get post data');
       return [];
@@ -78,12 +82,24 @@ export function DBContextProvider(props) {
       })
     );
 
-    return posts.filter(post => Boolean(post));
+    const ret = posts.filter(post => Boolean(post));
+    setPosts(ret);
+    return ret;
+
   }, [auth, getUser]);
+
+  const createPost = React.useCallback((message) => {
+    const uid = auth.current.uid;
+    return store.collection('posts').doc().set({
+      owner: uid,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      message,
+    }).then(() => listPosts())
+  }, [auth, listPosts])
 
   return (
     <DBContext.Provider 
-    value={{getUser, listPosts}} 
+    value={{getUser, listPosts, createPost, posts}} 
     children={props.children}
     />
   )

@@ -1,26 +1,64 @@
-import React from 'react';
-import { useDB, useAuth } from '../../api';
-import { Box } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { useDB, useAuth, useBank } from '../../api';
+import { Box, Button, TextField, makeStyles } from '@material-ui/core';
 import { Post } from './Post';
 import { PlaidLinkButton } from '../PlaidLink';
+import { BankContextProvider } from '../../api/plaid';
+
+const useStyles = makeStyles(() => ({
+  button: {
+    marginBottom: '1rem',
+    height: '3rem',
+    width: '6rem',
+
+  },
+  label: {
+    fontWeight: 'bold',
+  }
+})) 
 
 export const Wall = () => {
-  const [ posts, setPosts ] = React.useState([]);
+  const [ message, setMessage ] = React.useState('');
   const db = useDB();
   const auth = useAuth();
+  const bank = useBank();
+  const classes = useStyles();
 
-  React.useEffect(() => {
-    db.listPosts().then(setPosts);
-  }, [db]);
+  useEffect(() => {
+    db.listPosts();
+    bank.requestLinkToken();
+  }, []);
+
+  const handleGeneratePost = React.useCallback(() => {
+    if (auth.current) {
+      db.createPost(message);
+    }
+  }, [auth, db, message]);
 
   return (
     <Box 
       display="flex"
       flexDirection="column"
     >
-      <PlaidLinkButton />
+      {!bank.accessToken && <PlaidLinkButton />}
+      <Box display="flex" alignItems="stretch">
+        <TextField 
+          style={{flexGrow: 1, margin: '0 1rem'}} 
+          value={message} 
+          onChange={e => setMessage(e.target.value)} 
+          placeholder="Test Messages Here..."
+        />
+        <Button 
+          variant="contained" 
+          color="secondary" 
+          onClick={handleGeneratePost}
+          classes={{root: classes.button, label: classes.label}}
+        >
+          Generate Post
+        </Button>
+      </Box>
       {
-        posts.map(post => <Post key={post.timestamp} post={post} />)
+        db.posts.map(post => <Post key={post.timestamp} post={post} />)
       }
     </Box>
   )

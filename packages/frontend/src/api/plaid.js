@@ -11,6 +11,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const serverLinkToken = functions.httpsCallable('plaid-createLinkToken');
 const serverAccessToken = functions.httpsCallable('plaid-setAccessToken');
+const serverGetHoldings = functions.httpsCallable('plaid-getHoldings');
 
 const BankContext = React.createContext();
 
@@ -20,33 +21,39 @@ export const BankContextProvider = (props) => {
   const db = useDB();
   const auth = useAuth();
 
-  React.useEffect(() => {
+  const sync = React.useCallback(async () => {
     if (auth.current) {
-      (async () => {
-        const user = await db.getUser(undefined, 'private');
-        if (!user || !user.accessToken) {
-          const { data } = await serverLinkToken();
-          console.log(data);
-          if (data.status_code !== 200) 
-            throw Error('Request Error: Plaid Returned', data.status_code);
-          setLinkToken(data.link_token);
-        } else {
-          setAccessToken(user.accessToken);
-        }
-      })();
+      const response = await serverGetHoldings();
+      const data = response.data.holdings;
+      const total = data.reduce((acc, val) => acc + val.institution_value, 0);
+      db.createPost(`I just joined Kasegi with $${total} in savings!`)
     }
-  }, [auth, db]);
+  }, [auth]);
+
+  const requestLinkToken = React.useCallback(async () => {
+    const user = await db.getUser(undefined, 'private');
+    if (!user || !user.accessToken) {
+      const { data } = await serverLinkToken();
+      if (data.status_code !== 200) 
+        throw Error('Request Error: Plaid Returned', data.status_code);
+      setLinkToken(data.link_token);
+    } else {
+      setAccessToken(user.accessToken);
+    }
+  }, [db]);
 
   const exchangeToken = React.useCallback(async (token, metadata) => {
     const response = await serverAccessToken({ publicToken: token, metadata })
     setAccessToken(response.data.access_token);
-  }, []);
+    return sync();
+  }, [sync]);
 
   return (
     <BankContext.Provider 
       value={{
         accessToken,
         linkToken,
+        requestLinkToken,
         exchangeToken,
       }} 
       children={props.children}

@@ -2,6 +2,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const plaid = require('plaid');
 
+const store = admin.firestore();
+
 const map = {
   'sandbox': plaid.environments.sandbox,
 }
@@ -49,7 +51,7 @@ exports.setAccessToken = functions.https.onCall((data, context) => {
         return reject(err); 
       }
       functions.logger.info(tres, { structuredData: true});
-      const userRef = admin.firestore().collection('users').doc(uid);
+      const userRef = store.collection('users').doc(uid);
       const privateRef = userRef.collection('private').doc(uid);
       privateRef.set({
         itemID: tres.item_id,
@@ -60,6 +62,31 @@ exports.setAccessToken = functions.https.onCall((data, context) => {
         .then(() => resolve({access_token: data.publicToken, ITEM_ID: tres.item_id}))
     });
   });
+})
+
+exports.getHoldings = functions.https.onCall(async (_, context) => {
+  const uid = context.auth.uid;
+  const userRef = store.collection('users').doc(uid);
+  const priv = userRef.collection('private').doc(uid);
+  const record = (await priv.get()).data();
+  const accessToken = record.access_token;
+  if (!accessToken) return {
+    ok: false,
+    error: 'account-not-integrated',
+  }
+
+  let response;
+  try {
+    response = await plaidClient.getHoldings(accessToken);
+  } catch (e) {
+    return { ok: false, error: e }
+  }
+
+  return {
+    ok: true,
+    holdings: response.holdings,
+    securities: response.securities,
+  }
 })
 
 // // Create and Deploy Your First Cloud Functions

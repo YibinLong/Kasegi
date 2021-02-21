@@ -3,7 +3,7 @@ import { useBank } from '../../api';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core'
 import { usePlaidLink } from 'react-plaid-link';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -16,6 +16,7 @@ const useStyles = makeStyles(() => ({
 })) 
 
 export const PlaidLinkButton = (props) => {
+  console.log('bank rerender');
   const bank = useBank();
   const classes = useStyles();
 
