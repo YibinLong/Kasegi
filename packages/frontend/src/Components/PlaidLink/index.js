@@ -1,5 +1,5 @@
 
-import { bank } from '../../api';
+import { useBank } from '../../api';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core'
 import { usePlaidLink } from 'react-plaid-link';
@@ -15,12 +15,13 @@ const useStyles = makeStyles(() => ({
   }
 })) 
 
-export const PlaidLink = (props) => {
+export const PlaidLinkWrapper = (props) => {
 
-};
+}
 
 export const PlaidLinkButton = (props) => {
   const classes = useStyles();
+  const bank = useBank();
   const { linkToken } = props;
 
   const onSuccess = React.useCallback((token, metadata) => {
@@ -32,8 +33,7 @@ export const PlaidLinkButton = (props) => {
     onSuccess,
   }
 
-  const { open, ready, error } = usePlaidLink(config);
-  return (
+  const StyledButton = (props) => (
     <Button 
       classes={{
         root: classes.button,
@@ -41,9 +41,16 @@ export const PlaidLinkButton = (props) => {
       }}
       variant="contained" 
       color="primary"
-      onClick={() => open()} 
-      disabled={false}>
+      onClick={props.onClick} 
+      disabled={!props.ready}>
       Connect to your bank
     </Button>
+  )
+
+  const { open, ready, error } = usePlaidLink(config);
+
+  if (!linkToken) return <StyledButton ready={false}/>
+  return (
+    <StyledButton ready={ready} onClick={() => open()} />
   )
 }

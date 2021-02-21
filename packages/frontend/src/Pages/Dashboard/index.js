@@ -1,11 +1,11 @@
 import { Grid, Container } from '@material-ui/core';
 import React from 'react';
-import { useUser } from '../../api'; 
+import { useAuth } from '../../api'; 
 import { Wall } from '../../Components/Wall';
 
 export const Dashboard = () => {
-  const user = useUser();
-  if (!user) return <></>;
+  const auth = useAuth();
+  if (!auth.current) return <></>;
   return (
     <Container 
       component="main"

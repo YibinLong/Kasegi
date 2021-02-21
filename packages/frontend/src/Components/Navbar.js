@@ -1,13 +1,13 @@
 import { Button, AppBar, Toolbar } from '@material-ui/core';
-import { useUser, auth } from '../api';
+import { useAuth } from '../api';
 export const Navbar = () => {
-  const user = useUser();
+  const auth = useAuth();
 
   return (
     <AppBar position="relative">
       <Toolbar>
         { 
-          user && 
+          auth.current && 
           <Button 
             color="inherit"
             onClick={() => auth.signOut()}

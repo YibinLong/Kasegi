@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { Button } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import { db } from '../../api';
+import { useDB } from '../../api';
 
 export const Profile = () => {
   const [ profile, setProfile ] = React.useState({});
   const params = useParams();
+  const db = useDB();
 
   useEffect(() => {
     db.getUser(params.id).then(setProfile);
-  }, [params.id])
+  }, [db, params.id])
 
   return (
     <div>

@@ -1,3 +1,4 @@
+import React from 'react';
 import firebase from 'firebase/app';
 
 const store = firebase.firestore;
@@ -48,3 +49,12 @@ export const db = {
     return data;
   }
 };
+
+
+const DBContext = React.createContext(db);
+export function useDB() {
+  return React.useContext(DBContext);
+};
+export const DBContextProvider = (props) => {
+  return <DBContext.Provider value={db} children={props.children}/>
+}

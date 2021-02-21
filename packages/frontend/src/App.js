@@ -1,21 +1,21 @@
 import React from "react";
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { useAuth } from './api';
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
-import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter, Route } from "react-router-dom";
-import { useUser } from './api';
 import { Dashboard } from "./Pages/Dashboard";
 import { Profile } from "./Pages/Profile";
 import { Navbar } from './Components/Navbar';
 
 
 function App() {
-  const user = useUser();
-  console.log('user', user);
+  const auth = useAuth();
+  console.log('render?');
 
   const getHome = () => {
-    if (user === undefined) return <></> // Loading
-    else if (user) return <Dashboard /> // Signed Out
+    if (auth.current === undefined) return <></> // Loading
+    else if (auth.current) return <Dashboard /> // Signed Out
     else return <SignIn />
   }
 
