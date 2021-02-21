@@ -4,13 +4,20 @@ const store = firebase.firestore;
 const auth = firebase.auth;
 
 export const db = {
-  listPosts: async (limit) => {
+  async listPosts(limit) {
     if (!auth().currentUser) throw new Error('not signed in');
     const snapshot = await store().collection('posts').get()
-    const ret = [];
-    snapshot.forEach(doc => ret.push(doc.data()));
-    return ret;
+    const datas = [];
+    snapshot.forEach((doc) => datas.push(doc.data()));
+    const posts = await Promise.all(
+      datas.map(async (data) => {
+        if (!data.owner) return null;
+        return { ...data, ...await this.getUser(data.owner) }
+      })
+    );
+    return posts.filter(post => Boolean(post));
   },
+
   createPost: async (options) => {
     if (!auth().currentUser) throw new Error('not signed in');
     const uid = auth().currentUser.uid;

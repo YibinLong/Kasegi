@@ -7,10 +7,8 @@ export const Wall = () => {
   const [ posts, setPosts ] = React.useState([]);
 
   React.useEffect(() => {
-    db.listPosts()
-      .then(setPosts);
+    db.listPosts().then(setPosts);
   }, []);
-  console.log(posts);
 
   return (
     <Box 
@@ -18,7 +16,7 @@ export const Wall = () => {
       flexDirection="column"
     >
       {
-        posts.map(post => <Post post={post} />)
+        posts.map(post => <Post key={post.timestamp} post={post} />)
       }
     </Box>
   )
