@@ -48,12 +48,17 @@ export default function SignUp() {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [error, setError] = React.useState('');
   const history = useHistory();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     auth.createUser({name: username, password, email})
-      .then(() => history.push('/'));
+      .then((response) => {
+        console.log(response);
+      })
+      .then(() => history.push('/'))
+      .catch(error => setError(error.message));
   }
 
   return (
@@ -122,6 +127,7 @@ export default function SignUp() {
             </Grid>
           </Grid>
         </form>
+        <span>{error}</span>
       </div>
       <Box mt={5}>
         <Copyright />
