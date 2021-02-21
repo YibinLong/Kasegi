@@ -21,15 +21,6 @@ export const BankContextProvider = (props) => {
   const db = useDB();
   const auth = useAuth();
 
-  const sync = React.useCallback(async () => {
-    if (auth.current) {
-      const response = await serverGetHoldings();
-      const data = response.data.holdings;
-      const total = data.reduce((acc, val) => acc + val.institution_value, 0);
-      db.createPost(`I just joined Kasegi with $${total} in savings!`)
-    }
-  }, [auth]);
-
   const requestLinkToken = React.useCallback(async () => {
     const user = await db.getUser(undefined, 'private');
     if (!user || !user.accessToken) {
@@ -45,8 +36,7 @@ export const BankContextProvider = (props) => {
   const exchangeToken = React.useCallback(async (token, metadata) => {
     const response = await serverAccessToken({ publicToken: token, metadata })
     setAccessToken(response.data.access_token);
-    return sync();
-  }, [sync]);
+  }, []);
 
   return (
     <BankContext.Provider 
