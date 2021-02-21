@@ -198,7 +198,7 @@ describe("firestore.rules", () => {
       message: 'test-other-post',
     }
 
-    describe("create", () => {
+    describe.skip("create", () => {
       test("should not let logged out users create a post", async () => {
         const db = authedApp(undefined);
         const post = db.collection(collection).doc();
@@ -222,41 +222,26 @@ describe("firestore.rules", () => {
       });
     });
 
-    describe.skip("read", () => {
+    describe("read", () => {
       beforeEach(async () => {
         const db = authedApp(defaultAuth);
         await db
           .collection(collection)
           .doc(roomId)
-          .set(ownerData);
+          .set(myPost);
 
         const anotherDb = authedApp(anotherUidAuth);
         await anotherDb
           .collection(collection)
           .doc(anotherRoomId)
-          .set(anotherOwnerData);
+          .set(otherPost);
       });
 
-      test("should not let logged out users read", async () => {
-        const db = authedApp(undefined);
-        const room = db.collection(collection).doc(roomId);
-        await firebase.assertFails(room.get());
-      });
-
-      test("should let users only read their own private", async () => {
+      it('should allow reads', () => {
         const db = authedApp(defaultAuth);
-        const user = db.collection(collection).doc('user');
-        await firebase.assertSucceeds(user.collection('public').get());
-
-        const anotherRoom = db.collection(collection).doc(anotherRoomId);
-        await firebase.assertFails(anotherRoom.get());
+        firebase.assertSucceeds(db.collection('posts').get());
       });
 
-      test("should only let admin read", async () => {
-        const db = authedApp(adminAuth);
-        const room = db.collection(collection).doc(uid);
-        await firebase.assertSucceeds(room.get());
-      });
     });
 
     describe.skip("update", () => {

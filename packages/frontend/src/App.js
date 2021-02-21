@@ -3,7 +3,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { useAuth } from './api';
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
-import { BrowserRouter, Route } from "react-router-dom";
+import { Switch, BrowserRouter, Route } from "react-router-dom";
 import { Dashboard } from "./Pages/Dashboard";
 import { Profile } from "./Pages/Profile";
 import { Navbar } from './Components/Navbar';
@@ -22,10 +22,12 @@ function App() {
     <CssBaseline />
     <Navbar/>
     <BrowserRouter>
-      <Route path="/" exact component={getHome} />
-      <Route path="/signin" component={SignIn} />
-      <Route path="/signup" component={SignUp} />
-      <Route path="/:id" component={Profile} />
+      <Switch>
+        <Route path="/" exact component={getHome} />
+        <Route path="/signin" component={SignIn} />
+        <Route path="/signup" component={SignUp} />
+        <Route path="/profile/:id" component={Profile} />
+      </Switch>
     </BrowserRouter>
     </>
 

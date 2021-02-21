@@ -15,11 +15,11 @@ service cloud.firestore {
         && request.auth.uid is string
     }
 
-    function isValidPost() {
-      return request.resource.data.keys().hasAll(['owner', 'message', 'timestamp'])
-        && request.resource.data.message is string
-        && request.resource.data.timestamp is timestamp;
-    }
+    // function isValidPost() {
+    //   return request.resource.data.keys().hasAll(['owner', 'message', 'timestamp'])
+    //     && request.resource.data.message is string
+    //     && request.resource.data.timestamp is timestamp;
+    // }
 
 
     match /users/{user} {

@@ -5,6 +5,9 @@ import React from 'react';
 
 const fb = firebase.auth();
 const functions = firebase.functions();
+if (process.env.NODE_ENV === 'development') {
+  fb.useEmulator('http://localhost:9099');
+}
 
 const serverCreateUser = functions.httpsCallable('postCreateUser');
 
@@ -17,12 +20,8 @@ export const auth = {
    */
   createUser: async (options) => {
     if (fb.currentUser) throw Error('Cannot create a user when signed in.');
-    const { email, password, name } = options;
-    // Set up a uid for the request to the function
-    await fb.signInAnonymously();
-    await serverCreateUser({ name: name });
-    const credential = firebase.auth.EmailAuthProvider.credential(email, password);
-    await auth.currentUser.linkWithCredential(credential);
+    await serverCreateUser(options);
+    await fb.signInWithEmailAndPassword(options.email, options.password);
   },
 
   /**

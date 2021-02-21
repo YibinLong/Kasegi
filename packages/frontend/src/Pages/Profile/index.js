@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Button } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import { useDB } from '../../api';
+import { useAuth, useDB } from '../../api';
 
 export const Profile = () => {
   const [ profile, setProfile ] = React.useState({});
@@ -11,10 +11,11 @@ export const Profile = () => {
   useEffect(() => {
     db.getUser(params.id).then(setProfile);
   }, [db, params.id])
+  
 
   return (
     <div>
-      <h1>{profile.name}</h1>
+      <h1>{profile && profile.name}</h1>
       <Button>Request Friend</Button>
     </div>
   )

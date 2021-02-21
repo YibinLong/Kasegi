@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useAuth } from '../../api';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -48,10 +48,12 @@ export default function SignUp() {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const history = useHistory();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    auth.createUser({name: username, password, email});
+    auth.createUser({name: username, password, email})
+      .then(() => history.push('/'));
   }
 
   return (

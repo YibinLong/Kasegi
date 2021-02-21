@@ -4,21 +4,30 @@ import 'firebase/firestore';
 import { useAuth } from './auth';
 
 const store = firebase.firestore();
+if (process.env.NODE_ENV === 'development') {
+  store.useEmulator('localhost', 8080);
+}
 
 const DBContext = React.createContext();
 export function DBContextProvider(props) {
   const [ docs, setDocs ] = React.useState();
   const auth = useAuth();
 
-  const getUser = React.useCallback(async (uid, selector) => {
+  const getUser = React.useCallback(async (queryId, selector) => {
+    if (!auth.current) {
+      console.error('Reading data when not signed in is disallowed.');
+      return undefined;
+    }
     // Get my own data
-    let user, pub, priv;
+    let me, user, pub, priv;
+    let uid = queryId;
     if (!uid) {
+      me = true;
       if (!auth.current) throw new Error('must either be signed in or give UID');
-      let id = auth.current.uid;
-      user = store.collection('users').doc(id);
-      pub = user.collection('public').doc(id);
-      priv = user.collection('private').doc(id);
+      uid = auth.current.uid;
+      user = store.collection('users').doc(uid);
+      pub = user.collection('public').doc(uid);
+      priv = user.collection('private').doc(uid);
       if (!docs) {
         setDocs({user: user, public: pub, private: priv});
       }
@@ -27,18 +36,34 @@ export function DBContextProvider(props) {
       pub = user.collection('public').doc(uid);
       priv = user.collection('private').doc(uid);
     }
-    if (selector === 'private') return (await priv.get()).data();
-    if (selector === 'public') return (await pub.get()).data();
-    else return ({
-      ...(await user.get()).data(),
-      public: (await pub.get()).data(),
-      private: (await priv.get()).data(), 
-    });
+
+    // Only return public for uid-specific requests
+    try {
+      if (selector === 'public') return (await pub.get()).data();
+      else if (me && selector === 'private') return (await priv.get()).data();
+      else return ({
+        public: (await pub.get()).data(),
+        private: me ? (await pub.get()).data() : {},
+      });
+    } catch (e) {
+      console.error('Could not get profile data for', uid, e);
+      console.trace();
+      return {
+        public: {},
+        private: {},
+      }
+    }
   }, [auth, docs]);
 
   const listPosts = React.useCallback(async (limit) => {
     if (!auth.current) throw new Error('not signed in');
-    const snapshot = await store.collection('posts').get();
+    let snapshot;
+    try {
+      snapshot = await store.collection('posts').get();
+    } catch (e) {
+      console.log('could not get post data');
+      return [];
+    }
     const datas = [];
 
     // Get our data
@@ -55,8 +80,6 @@ export function DBContextProvider(props) {
 
     return posts.filter(post => Boolean(post));
   }, [auth, getUser]);
-
-  const [ value ] = React.useState({getUser, listPosts});
 
   return (
     <DBContext.Provider 
